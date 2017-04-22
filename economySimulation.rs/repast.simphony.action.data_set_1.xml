@@ -1,0 +1,39 @@
+<repast.simphony.data2.engine.DataSetDescriptor>
+  <name>Commodity Prices</name>
+  <type>NON_AGGREGATE</type>
+  <sourceType>economySimulation.StockExchange</sourceType>
+  <inclTick>true</inclTick>
+  <inclBatchRun>false</inclBatchRun>
+  <inclRandomSeed>false</inclRandomSeed>
+  <scheduleParams>
+    <start>1.0</start>
+    <interval>1.0</interval>
+    <priority>-Infinity</priority>
+    <pType>LAST</pType>
+    <duration>-1.0</duration>
+    <frequency>REPEAT</frequency>
+    <hashCode>-317050940</hashCode>
+  </scheduleParams>
+  <atEnd>false</atEnd>
+  <methodDataSources class="linked-hash-map">
+    <entry>
+      <string>AppleSellPrice</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>AppleSellPrice</id>
+        <className>economySimulation.StockExchange</className>
+        <methodName>getAppleSellPrice</methodName>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>BananaSellPrice</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>BananaSellPrice</id>
+        <className>economySimulation.StockExchange</className>
+        <methodName>getBananaSellPrice</methodName>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+  </methodDataSources>
+  <countSources class="linked-hash-map"/>
+  <customNADataSources class="linked-hash-map"/>
+  <customAggDataSources class="linked-hash-map"/>
+</repast.simphony.data2.engine.DataSetDescriptor>
