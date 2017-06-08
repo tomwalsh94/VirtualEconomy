@@ -27,7 +27,25 @@ public class StockExchange {
 		return se;
 	}
 	
-	public void init(double appleBuyPrice, double bananaBuyPrice, int appleQuantity, int bananaQuantity, ArrayList<Agent> createdAgents) {
+	@ScheduledMethod(start=1000, interval=1000, priority=1)
+	public void experiments () {
+		double profitMargin = 0;
+		for (int i = 0; i < agents.size(); i++) {
+			profitMargin = profitMargin + agents.get(i).getProfitMargin();
+		}
+		
+		double commodQ = 0;
+		for (int i = 0; i < agents.size(); i++) {
+			commodQ = commodQ + agents.get(i).getCommodityQuantity();
+		}
+		
+		System.out.println("***************************************");
+		System.out.println("Average learning agent proft margin: " + (profitMargin / agents.size()));
+		System.out.println("Average learning agent commodity quantity: " + (commodQ / agents.size()));
+		System.out.println("***************************************");
+	}
+	
+	public void init(int appleQuantity, int bananaQuantity, ArrayList<Agent> createdAgents) {
 		System.out.println("Stock exchange initialised");
 		//create commodityFactory object
 		CommodityFactory cf = new CommodityFactory();
@@ -37,11 +55,11 @@ public class StockExchange {
 		
 		//create the commodities and put them in the arrayList.
 		for (int i = 0; i < appleQuantity; i++) {
-			Commodity a = cf.makeCommodity("A", appleBuyPrice);
+			Commodity a = cf.makeCommodity("A");
 			commodities.add(a);
 		}
 		for (int i = 0; i < bananaQuantity; i++) {
-			Commodity b = cf.makeCommodity("B", bananaBuyPrice);
+			Commodity b = cf.makeCommodity("B");
 			commodities.add(b);
 		}
 		
@@ -52,16 +70,13 @@ public class StockExchange {
 	
 	@ScheduledMethod(start=1, interval=1, priority=10)
 	public void step() {
-		
 		System.out.println("---------------------------------------");
-		
 		//initiate auction for apples and bananas.
 		auction(new Apple(appleSellPrice));
 		auction(new Banana(bananaSellPrice));
 		tabulateGoods();
 		setExchangeRate();
 		printAttributes();
-		
 	}
 	
 	public void auction(Commodity item) {
@@ -84,17 +99,18 @@ public class StockExchange {
 		
 		//assumes there is more than one agent in the simulation.
 		//determine the winning bidder
-		while (bidders.size() != 1) { //there is no limit on rounds of bidding, so loop until only one agent remains.
-			//add a counter
-			for (int i = 0; i < bidders.size(); i++) {
-				if (bidders.get(i).getCommodityPercievedValue(item) > bidValue 
-						&& (bidders.get(i).getCapital() + bidders.get(i).makeBid()) > bidValue) {
-					//agent values the item higher than the current bid, so place a bid
-					bidValue = bidValue + bidders.get(i).makeBid();
-					leadingBidder = bidders.get(i);
-				} else if (bidders.get(i).getCommodityPercievedValue(item) <= bidValue) {
-					//agent no longer wants the item at bid price, so backs out of auction
-					bidders.remove(i);
+		if (bidders.size() > 1) {
+			while (bidders.size() != 1) { //there is no limit on rounds of bidding, so loop until only one agent remains.
+				for (int i = 0; i < bidders.size(); i++) {
+					if (bidders.get(i).getCommodityPercievedValue(item) > bidValue 
+							&& (bidders.get(i).getCapital() > ((bidders.get(i).makeBid()) + bidValue) * bidders.get(i).getCommodityQuantity()) ) {
+						//agent values the item higher than the current bid, so place a bid
+						bidValue = bidValue + bidders.get(i).makeBid();
+						leadingBidder = bidders.get(i);
+					} else {
+						//agent can't afford bid value, or doesn't want to buy it.
+						bidders.remove(i);
+					}
 				}
 			}
 		}
@@ -111,9 +127,9 @@ public class StockExchange {
 			} else if (item instanceof Banana) {
 				System.out.println("Item: Banana");
 			}
-			System.out.println("Quantity: "+leadingBidder.getCommodityQuantity(item));
+			System.out.println("Quantity: "+leadingBidder.getCommodityQuantity());
 			System.out.println("Price: " + bidValue);
-			System.out.println("Total: " + (bidValue * leadingBidder.getCommodityQuantity(item)));
+			System.out.println("Total: " + (bidValue * leadingBidder.getCommodityQuantity()));
 		} else {
 			System.out.println("Reserve bid not reached for item " + item.toString());
 		}
@@ -123,7 +139,7 @@ public class StockExchange {
 	private void sellCommodity(Commodity com, Agent bidder, double price) {
 		//get commodity from stock listing
 		ArrayList<Commodity> toSell = new ArrayList<Commodity>();
-		int quantity = bidder.getCommodityQuantity(com);
+		int quantity = bidder.getCommodityQuantity();
 		Commodity counter = null;
 		if (com instanceof Apple) {
 			for (int i = 0; commodities.size() > i && quantity > 0; i++) {
@@ -147,7 +163,7 @@ public class StockExchange {
 			}
 		}
 		bidder.setPortfolio(toSell);
-		bidder.setCapital(bidder.getCapital() - (double)(price * bidder.getCommodityQuantity(com)));
+		bidder.setCapital(bidder.getCapital() - (price * bidder.getCommodityQuantity()));
 	} 
 	
 	public void buyCommodity(Commodity com, Agent seller) {

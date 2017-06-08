@@ -7,12 +7,12 @@ import economySimulation.Commodity;
 public class CommodityFactory {
 	//this class will be used by the stock exchange to return 
 	//a new commodity of a specified type denoted by letter. 
-public Commodity makeCommodity(String newComodType, double buyPrice) {
+public Commodity makeCommodity(String newComodType) {
 			
 	if (newComodType.equals("A")) {
-		return new Apple(buyPrice);
+		return new Apple(0);
 	} else if (newComodType.equals("B")) {
-		return new Banana(buyPrice);
+		return new Banana(0);
 	} else return null;	
 }	
 }

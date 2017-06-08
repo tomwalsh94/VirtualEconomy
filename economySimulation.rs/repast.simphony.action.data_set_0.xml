@@ -1,5 +1,5 @@
 <repast.simphony.data2.engine.DataSetDescriptor>
-  <name>Agent Average Net Value</name>
+  <name>Commodity Prices1</name>
   <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
@@ -11,17 +11,26 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1457057112</hashCode>
+    <hashCode>-317050940</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>Agent Avg Net Worth</string>
+      <string>applePrice</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Agent Avg Net Worth</id>
-        <className>economySimulation.Agent</className>
-        <methodName>getNetWorth</methodName>
-        <aggType>MEAN</aggType>
+        <id>applePrice</id>
+        <className>economySimulation.StockExchange</className>
+        <methodName>getAppleSellPrice</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>bananaPrice</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>bananaPrice</id>
+        <className>economySimulation.StockExchange</className>
+        <methodName>getBananaSellPrice</methodName>
+        <aggType>MAX</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
   </methodDataSources>
